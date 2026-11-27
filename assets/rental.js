@@ -51,6 +51,9 @@
     modelIncluded.textContent = section.querySelector('[data-included]').textContent;
     planNote.textContent = item.element.querySelector('[data-plan-note]')?.textContent || '';
     planNote.hidden = !planNote.textContent;
+    const sheetLink = summary.querySelector('[data-sim-model]');
+    if (sheetLink) sheetLink.href = (item.model === 'inline' ? 'patins' : item.model) + '.html';
+    panel.dispatchEvent(new Event('ca:quote'));
     if (!valid) {
       total.textContent = 'Valor a calcular';
       breakdown.textContent = 'Informe uma quantidade inteira a partir de 1.';
@@ -85,7 +88,10 @@
     return true;
   }
   function persistSelection() {
+    if (location.protocol === 'file:') return;
     const link = new URL(location.href);
+    if (quantity.value && quantity.getAttribute('aria-invalid') !== 'true') link.searchParams.set('qtd', quantity.value);
+    else link.searchParams.delete('qtd');
     link.searchParams.set('modelo', model.value);
     link.searchParams.set('plano', plan.value);
     history.replaceState(null, '', link);
@@ -94,18 +100,24 @@
   model.addEventListener('change', () => { plansForModel(model.value); persistSelection(); });
   mode.addEventListener('change', () => { plansForModel(model.value, null, mode.value); persistSelection(); });
   plan.addEventListener('change', () => { display(); persistSelection(); });
-  quantity.addEventListener('input', display);
+  quantity.addEventListener('input', () => { display(); persistSelection(); });
   document.querySelectorAll('[data-select-plan]').forEach((link) => link.addEventListener('click', (event) => {
     if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || !setLink(link.dataset.selectPlan)) return;
     event.preventDefault();
     const url = new URL(link.href);
-    history.replaceState(null, '', url);
+    if (location.protocol !== 'file:') history.replaceState(null, '', url);
     panel.scrollIntoView();
     model.focus({ preventScroll: true });
   }));
   if (!setLink(params.get('plano'))) {
     if (Array.from(model.options).some((option) => option.value === params.get('modelo'))) model.value = params.get('modelo');
     plansForModel(model.value);
+  }
+  const requestedCount = params.get('qtd');
+  if (requestedCount && /^[1-9][0-9]*$/.test(requestedCount) && Number.isSafeInteger(Number(requestedCount))) {
+    quantity.value = requestedCount;
+    display();
+    if (quantity.getAttribute('aria-invalid') === 'true') { quantity.value = '1'; display(); }
   }
   panel.hidden = false;
   if (location.hash === '#simulador') requestAnimationFrame(() => panel.scrollIntoView());
