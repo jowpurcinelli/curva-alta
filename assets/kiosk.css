@@ -1,0 +1,12 @@
+.ca-kiosk { padding-block: clamp(45px, 6vw, 90px); background: var(--ca-paper); }
+.ca-kiosk-block { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(28px, 6vw, 85px); align-items: center; }
+.ca-kiosk figure { margin: 0; }
+.ca-kiosk figure img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.ca-kiosk figcaption { margin-top: 8px; font-size: .77rem; color: #4d6055; }
+.ca-kiosk h1, .ca-kiosk h2 { margin: 0; font-size: clamp(35px, 4.2vw, 70px); letter-spacing: -.055em; line-height: 1.01; }
+.ca-kiosk p { max-width: 49ch; margin: 18px 0; line-height: 1.5; }
+.ca-kiosk .ca-action { display: inline-flex; text-decoration: none; }
+@media (max-width: 760px) {
+  .ca-kiosk-block { grid-template-columns: 1fr; }
+  .ca-kiosk figure img { aspect-ratio: 1.65; }
+}

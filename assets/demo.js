@@ -1,0 +1,1 @@
+document.querySelectorAll('.ca-menu a').forEach(link=>link.addEventListener('click',()=>link.closest('details').open=false));
