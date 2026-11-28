@@ -54,3 +54,7 @@
  .ca-item-copy .back {margin-bottom:4px}
  .ca-filter {gap:6px 14px}
 }
+@media (max-width: 340px) {
+  .ca-wrap.ca-bar {padding-inline:12px}
+  .ca-bar .ca-header-cta {padding-inline:7px}
+}
